@@ -102,6 +102,7 @@ defmodule SendGrid.Email do
             attachments: nil,
             dynamic_template_data: nil,
             sandbox: false,
+            ip_pool_name: nil,
             __phoenix_view__: nil,
             __phoenix_layout__: nil
 
@@ -122,6 +123,7 @@ defmodule SendGrid.Email do
           headers: nil | headers(),
           attachments: nil | [attachment],
           sandbox: boolean(),
+          ip_pool_name: String.t(),
           __phoenix_view__: nil | atom,
           __phoenix_layout__:
             nil | %{optional(:text) => String.t(), optional(:html) => String.t()}
@@ -583,6 +585,19 @@ defmodule SendGrid.Email do
     end
   end
 
+  @doc """
+  Sets an ip_pool_name: nil.
+
+  ## Examples
+
+      Email.put_ip_pool_name(%Email{}, "test-pull-name")
+
+  """
+  @spec put_ip_pool_name(t, String.t()) :: t
+  def put_ip_pool_name(%Email{} = email, ip_pool_name) do
+    %Email{email | ip_pool_name: ip_pool_name}
+  end
+
   defp render_html(email, view_mod, template_name, layouts, assigns) do
     assigns =
       if Map.has_key?(layouts, :html) do
@@ -703,6 +718,7 @@ defmodule SendGrid.Email do
         reply_to: email.reply_to,
         send_at: email.send_at,
         template_id: email.template_id,
+        ip_pool_name: email.ip_pool_name,
         attachments: email.attachments,
         headers: email.headers,
         mail_settings: %{
